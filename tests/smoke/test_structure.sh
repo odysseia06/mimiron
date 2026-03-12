@@ -124,7 +124,7 @@ done
 
 # --- plugin.json references resolve --------------------------------------
 
-python3 -c "
+if python3 -c "
 import json, os, sys
 root = '${REPO_ROOT}'
 with open(os.path.join(root, 'plugin.json')) as f:
@@ -142,8 +142,7 @@ if errors:
 else:
     print('OK')
     sys.exit(0)
-" 2>/dev/null
-if [[ $? -eq 0 ]]; then
+" 2>/dev/null; then
   pass "All plugin.json references are valid"
 else
   fail "Some plugin.json references are broken"
