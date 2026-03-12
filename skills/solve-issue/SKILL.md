@@ -1,6 +1,6 @@
 ---
 name: solve-issue
-description: Read a GitHub issue, implement the fix on a feature branch, run validation, commit and push the work, and leave a concise issue follow-up comment only when there are meaningful leftovers or future extensions.
+description: "Read a GitHub issue, implement the fix on a feature branch, run validation, commit and push the work, and leave a concise issue follow-up comment only when there are meaningful leftovers or future extensions."
 argument-hint: "[issue-number] [optional implementation notes]"
 disable-model-invocation: true
 context: fork

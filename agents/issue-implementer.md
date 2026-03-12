@@ -1,6 +1,6 @@
 ---
 name: issue-implementer
-description: Implements a GitHub issue end-to-end in the current repository: read the issue, make the code change, validate it, commit it, push the feature branch, and leave a concise issue follow-up comment only when there are meaningful leftovers.
+description: "Implements a GitHub issue end-to-end in the current repository: read the issue, make the code change, validate it, commit it, push the feature branch, and leave a concise issue follow-up comment only when there are meaningful leftovers."
 tools: Read, Grep, Glob, Write, Edit, MultiEdit, Bash
 model: claude-opus-4-6
 permissionMode: acceptEdits
