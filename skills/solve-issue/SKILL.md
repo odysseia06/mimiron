@@ -6,7 +6,7 @@ disable-model-invocation: true
 context: fork
 agent: issue-implementer
 allowed-tools: Read, Grep, Glob, Edit, MultiEdit, Write, Bash(git *), Bash(gh *), Bash(npm *), Bash(pnpm *), Bash(yarn *), Bash(pytest *), Bash(python -m pytest *), Bash(cargo *), Bash(dotnet *), Bash(go test *), Bash(mvn *), Bash(gradle *), Bash(just *), Bash(make *)
-model: sonnet
+model: claude-opus-4-6
 ---
 
 ultrathink before editing.
