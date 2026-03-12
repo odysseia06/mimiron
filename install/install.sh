@@ -207,7 +207,7 @@ if [[ "$DRY_RUN" != true ]]; then
   files_json="["
   first=true
   for f in "${INSTALLED_FILES[@]}"; do
-    [[ "$first" == true ]] && first=false || files_json+=","
+    if [[ "$first" == true ]]; then first=false; else files_json+=","; fi
     files_json+="\"${f}\""
   done
   files_json+="]"
@@ -215,7 +215,7 @@ if [[ "$DRY_RUN" != true ]]; then
   dirs_json="["
   first=true
   for d in "${CREATED_DIRS[@]}"; do
-    [[ "$first" == true ]] && first=false || dirs_json+=","
+    if [[ "$first" == true ]]; then first=false; else dirs_json+=","; fi
     dirs_json+="\"${d}\""
   done
   dirs_json+="]"
@@ -223,7 +223,7 @@ if [[ "$DRY_RUN" != true ]]; then
   backups_json="["
   first=true
   for b in "${BACKUPS[@]}"; do
-    [[ "$first" == true ]] && first=false || backups_json+=","
+    if [[ "$first" == true ]]; then first=false; else backups_json+=","; fi
     local_rel="${b%%|*}"
     local_path="${b##*|}"
     backups_json+="{\"file\":\"${local_rel}\",\"backup\":\"${local_path}\"}"

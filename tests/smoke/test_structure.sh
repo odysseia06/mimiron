@@ -142,7 +142,12 @@ if errors:
 else:
     print('OK')
     sys.exit(0)
-" 2>/dev/null && pass "All plugin.json references are valid" || fail "Some plugin.json references are broken"
+" 2>/dev/null
+if [[ $? -eq 0 ]]; then
+  pass "All plugin.json references are valid"
+else
+  fail "Some plugin.json references are broken"
+fi
 
 # --- Summary --------------------------------------------------------------
 

@@ -175,7 +175,9 @@ printf '%s\n' "${dirs_to_check[@]}" | sort -u -r | while IFS= read -r dir_path; 
       if [[ "$DRY_RUN" == true ]]; then
         info "Would remove empty directory: ${dir_path}"
       else
-        rmdir "$dir_path" 2>/dev/null && ok "Removed empty directory: ${dir_path}" || true
+        if rmdir "$dir_path" 2>/dev/null; then
+          ok "Removed empty directory: ${dir_path}"
+        fi
       fi
     fi
   fi
