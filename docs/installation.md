@@ -1,91 +1,47 @@
 # Installation
 
-## Plugin install (recommended)
+Mimiron supports separate install paths for each agent family.
 
-The primary way to install Mimiron is as a Claude Code plugin.
+## Claude Code
 
-### Project-level (recommended for teams)
-
-```bash
-claude plugin add github:mimiron-dev/mimiron
-```
-
-This makes Mimiron's skills and agents available in the current project. Team members who clone the repo will get the same plugin configuration.
-
-### User-level
+### Plugin install (recommended)
 
 ```bash
-claude plugin add --scope user github:mimiron-dev/mimiron
-```
+# Project-level (recommended for teams)
+claude plugin add github:odysseia06/mimiron
 
-This makes Mimiron available across all your Claude Code sessions.
+# User-level
+claude plugin add --scope user github:odysseia06/mimiron
 
-### From a local path (development)
-
-```bash
+# From a local path (development)
 claude plugin add --scope local /path/to/mimiron
 ```
 
-Useful when developing or testing changes to Mimiron itself.
-
-## Manual install (alternative)
-
-For environments where the plugin system is unavailable or you prefer explicit control, use the installer scripts.
-
-### Prerequisites
-
-- bash 3.2+ (Linux/macOS) or PowerShell 5.1+ (Windows)
-- Python 3.8+ (for guard scripts)
-- git (for symlink source verification)
-
-### Project-level install
+### Manual install
 
 ```bash
-# Dry-run first to see what will happen
+# Dry-run first
 bash install/install.sh --target /path/to/project --scope project --dry-run
 
 # Install with file copies
 bash install/install.sh --target /path/to/project --scope project
 
-# Install with symlinks (good for development)
+# Install with symlinks (development)
 bash install/install.sh --target /path/to/project --scope project --mode symlink
-```
 
-This places assets under `/path/to/project/.claude/`.
-
-### User-level install
-
-```bash
-# Installs to ~/.claude/
+# User-level
 bash install/install.sh --scope user
-
-# Dry-run
-bash install/install.sh --scope user --dry-run
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-# Project-level
 .\install\install.ps1 -Target C:\path\to\project -Scope project
-
-# User-level
 .\install\install.ps1 -Scope user
-
-# Dry-run
 .\install\install.ps1 -Scope project -Target . -DryRun
 ```
 
-### Install modes
-
-| Mode | Behavior | Use case |
-|---|---|---|
-| `copy` (default) | Copies files to the target | Production installs, shared repos |
-| `symlink` | Creates symlinks to the source repo | Local development, rapid iteration |
-
-### What gets installed
-
-The installer places these files relative to the target `.claude/` directory:
+### What gets installed (Claude)
 
 ```
 .claude/
@@ -102,79 +58,80 @@ The installer places these files relative to the target `.claude/` directory:
     └── guard_bash_commands.py
 ```
 
-## Verification
+## Codex
 
-After installing, verify that everything is in place:
+### Manual install
 
 ```bash
-# Verify plugin structure (from the Mimiron repo)
-bash install/verify.sh --source .
-
-# Verify a manual install target
-bash install/verify.sh --target /path/to/project
+bash install/install-codex.sh --target /path/to/project --dry-run
+bash install/install-codex.sh --target /path/to/project
+bash install/install-codex.sh --target /path/to/project --mode symlink
 ```
 
-The verify script checks:
-- All expected files exist
-- Symlinks point to correct sources (symlink mode)
-- File checksums match source (copy mode)
-- Scripts are executable
-- Directory structure is correct
+Note: Codex skills are placeholders only and are not yet functional.
 
-Exit code 0 means everything checks out. Non-zero means something is wrong.
+### What gets installed (Codex)
+
+```
+.agents/
+├── skills/
+│   └── solve-issue/
+│       └── SKILL.md          # Placeholder stub
+└── openai.yaml                # allow_implicit_invocation: false
+```
+
+## Verification
+
+```bash
+# Verify Claude plugin structure (from repo root)
+bash install/verify.sh --source .
+
+# Verify a Claude manual install
+bash install/verify.sh --target /path/to/project
+
+# Verify Codex structure
+bash install/verify-codex.sh --source .
+```
+
+Exit code 0 means everything checks out.
 
 ## Uninstall
 
-### Plugin uninstall
+### Claude — plugin
 
 ```bash
 claude plugin remove mimiron
 ```
 
-### Manual uninstall
+### Claude — manual
 
 ```bash
-# Dry-run first
 bash install/uninstall.sh --target /path/to/project --dry-run
-
-# Uninstall
 bash install/uninstall.sh --target /path/to/project
 ```
-
-The uninstall script:
-- Reads the install manifest to know exactly what to remove
-- Removes only files that Mimiron installed
-- Restores any backups it created during install
-- Never deletes unrelated files
-- Supports dry-run
 
 ### Windows
 
 ```powershell
 .\install\uninstall.ps1 -Target C:\path\to\project
-.\install\uninstall.ps1 -Target C:\path\to\project -DryRun
 ```
+
+The uninstall script reads the install manifest, removes only files Mimiron installed, restores backups, and cleans up empty directories.
 
 ## Troubleshooting
 
 ### "Permission denied" on guard script
 
-The guard script must be executable:
-
 ```bash
 chmod +x .claude/scripts/guard_bash_commands.py
 ```
 
-The installer handles this automatically.
-
 ### Symlinks broken after moving the source repo
 
-If you used `--mode symlink` and then moved the Mimiron source repo, the symlinks will break. Either:
-- Reinstall with the new source path
-- Switch to copy mode: `install.sh --target ... --scope project --mode copy`
+Reinstall or switch to copy mode.
 
 ### Skills not showing up after manual install
 
-Ensure the files are under the correct `.claude/` directory for your scope:
+Ensure files are under the correct `.claude/` directory for your scope:
 - Project-level: `<project-root>/.claude/`
 - User-level: `~/.claude/`

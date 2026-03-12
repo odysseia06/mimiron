@@ -27,8 +27,11 @@ jobs:
       - name: Run guard script tests
         run: python3 tests/smoke/test_guard_script.py
 
-      - name: Verify plugin structure
+      - name: Verify Claude plugin structure
         run: bash install/verify.sh --source .
+
+      - name: Verify Codex structure
+        run: bash install/verify-codex.sh --source .
 
   shellcheck:
     name: Lint shell scripts
@@ -44,4 +47,6 @@ jobs:
           shellcheck install/install.sh
           shellcheck install/uninstall.sh
           shellcheck install/verify.sh
+          shellcheck install/install-codex.sh
+          shellcheck install/verify-codex.sh
           shellcheck tests/smoke/test_structure.sh

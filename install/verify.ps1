@@ -140,11 +140,11 @@ if ($Source) {
     # --- Expected runtime files ----------------------------------------------
 
     $expectedFiles = @(
-        "skills/solve-issue/SKILL.md",
-        "skills/solve-issue/templates/issue-followup-comment.md",
-        "skills/solve-issue/examples/final-response-format.md",
-        "agents/issue-implementer.md",
-        "scripts/guard_bash_commands.py"
+        ".claude/skills/solve-issue/SKILL.md",
+        ".claude/skills/solve-issue/templates/issue-followup-comment.md",
+        ".claude/skills/solve-issue/examples/final-response-format.md",
+        ".claude/agents/issue-implementer.md",
+        ".claude/scripts/guard_bash_commands.py"
     )
 
     foreach ($f in $expectedFiles) {
@@ -158,7 +158,7 @@ if ($Source) {
 
     # --- SKILL.md has frontmatter --------------------------------------------
 
-    $skillFile = Join-Path $Source "skills/solve-issue/SKILL.md"
+    $skillFile = Join-Path $Source ".claude/skills/solve-issue/SKILL.md"
     if (Test-Path $skillFile) {
         if (Test-YamlFrontmatter $skillFile) {
             Write-Pass "SKILL.md has YAML frontmatter"
@@ -169,7 +169,7 @@ if ($Source) {
 
     # --- Agent has frontmatter -----------------------------------------------
 
-    $agentFile = Join-Path $Source "agents/issue-implementer.md"
+    $agentFile = Join-Path $Source ".claude/agents/issue-implementer.md"
     if (Test-Path $agentFile) {
         if (Test-YamlFrontmatter $agentFile) {
             Write-Pass "issue-implementer.md has YAML frontmatter"
@@ -180,7 +180,7 @@ if ($Source) {
 
     # --- Guard script checks -------------------------------------------------
 
-    $guardFile = Join-Path $Source "scripts/guard_bash_commands.py"
+    $guardFile = Join-Path $Source ".claude/scripts/guard_bash_commands.py"
     if (Test-Path $guardFile) {
         # Has shebang
         $firstLine = (Get-Content -Path $guardFile -TotalCount 1)
@@ -211,6 +211,40 @@ if ($Source) {
         if ($allRefsOk) {
             Write-Pass "All plugin.json references resolve to existing files"
         }
+    }
+
+    # --- Codex files ---------------------------------------------------------
+
+    $codexSkillFile = Join-Path $Source ".agents/skills/solve-issue/SKILL.md"
+    if (Test-Path $codexSkillFile) {
+        Write-Pass "Found: .agents/skills/solve-issue/SKILL.md"
+        if (Test-YamlFrontmatter $codexSkillFile) {
+            Write-Pass ".agents/skills/solve-issue/SKILL.md has YAML frontmatter"
+        } else {
+            Write-Fail ".agents/skills/solve-issue/SKILL.md missing YAML frontmatter"
+        }
+    } else {
+        Write-Fail "Missing: .agents/skills/solve-issue/SKILL.md"
+    }
+
+    $codexYamlFile = Join-Path $Source ".agents/openai.yaml"
+    if (Test-Path $codexYamlFile) {
+        Write-Pass "Found: .agents/openai.yaml"
+        $codexYamlContent = Get-Content $codexYamlFile -Raw
+        if ($codexYamlContent -match "allow_implicit_invocation: false") {
+            Write-Pass ".agents/openai.yaml contains 'allow_implicit_invocation: false'"
+        } else {
+            Write-Fail ".agents/openai.yaml missing 'allow_implicit_invocation: false'"
+        }
+    } else {
+        Write-Fail "Missing: .agents/openai.yaml"
+    }
+
+    $agentsMdFile = Join-Path $Source "AGENTS.md"
+    if (Test-Path $agentsMdFile) {
+        Write-Pass "Found: AGENTS.md"
+    } else {
+        Write-Fail "Missing: AGENTS.md"
     }
 
     # --- Essential docs ------------------------------------------------------
@@ -300,7 +334,7 @@ if ($Target) {
             if ($installMode -eq "copy" -and $sourceRoot -and (Test-Path $sourceRoot)) {
                 Write-Info "Verifying file checksums against source..."
                 foreach ($f in $expectedFiles) {
-                    $srcPath = Join-Path $sourceRoot $f
+                    $srcPath = Join-Path $sourceRoot (Join-Path ".claude" $f)
                     $tgtPath = Join-Path $claudeDir $f
                     if ((Test-Path $srcPath) -and (Test-Path $tgtPath)) {
                         $srcHash = Get-FileHash256 $srcPath
@@ -320,7 +354,7 @@ if ($Target) {
                         if (Test-IsSymlink $tgtPath) {
                             $linkTarget = Get-SymlinkTarget $tgtPath
                             if ($sourceRoot) {
-                                $expectedSrc = Join-Path $sourceRoot $f
+                                $expectedSrc = Join-Path $sourceRoot (Join-Path ".claude" $f)
                                 # Normalize for comparison
                                 $normalizedLink = $linkTarget.TrimEnd('\', '/')
                                 $normalizedExpected = $expectedSrc.TrimEnd('\', '/')

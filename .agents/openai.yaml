@@ -1,0 +1,3 @@
+# Codex agent configuration for Mimiron
+# Skills under .agents/skills/ are placeholders only — do not invoke automatically.
+allow_implicit_invocation: false

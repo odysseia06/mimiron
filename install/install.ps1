@@ -6,7 +6,7 @@
     Copies or symlinks Mimiron skills, agents, and scripts into the target's .claude/
     directory. Creates a JSON manifest for later uninstall and verification.
 
-    The primary install path is: claude plugin add github:mimiron-dev/mimiron
+    The primary install path is: claude plugin add github:odysseia06/mimiron
     This script is an optional convenience for manual setup.
 
 .PARAMETER Target
@@ -60,11 +60,11 @@ $SOURCE_ROOT = (Resolve-Path (Join-Path $SCRIPT_DIR "..")).Path
 # Files to install: source (relative to SOURCE_ROOT) -> target (relative to .claude/)
 # Format matches the bash script: "source_rel|target_rel"
 $INSTALL_MAP = @(
-    @{ Source = "skills/solve-issue/SKILL.md";                            Target = "skills/solve-issue/SKILL.md" }
-    @{ Source = "skills/solve-issue/templates/issue-followup-comment.md"; Target = "skills/solve-issue/templates/issue-followup-comment.md" }
-    @{ Source = "skills/solve-issue/examples/final-response-format.md";   Target = "skills/solve-issue/examples/final-response-format.md" }
-    @{ Source = "agents/issue-implementer.md";                            Target = "agents/issue-implementer.md" }
-    @{ Source = "scripts/guard_bash_commands.py";                         Target = "scripts/guard_bash_commands.py" }
+    @{ Source = ".claude/skills/solve-issue/SKILL.md";                            Target = "skills/solve-issue/SKILL.md" }
+    @{ Source = ".claude/skills/solve-issue/templates/issue-followup-comment.md"; Target = "skills/solve-issue/templates/issue-followup-comment.md" }
+    @{ Source = ".claude/skills/solve-issue/examples/final-response-format.md";   Target = "skills/solve-issue/examples/final-response-format.md" }
+    @{ Source = ".claude/agents/issue-implementer.md";                            Target = "agents/issue-implementer.md" }
+    @{ Source = ".claude/scripts/guard_bash_commands.py";                         Target = "scripts/guard_bash_commands.py" }
 )
 
 # --- Helpers -----------------------------------------------------------------

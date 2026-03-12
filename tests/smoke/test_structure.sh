@@ -23,16 +23,21 @@ required_files=(
   "CODE_OF_CONDUCT.md"
   "SECURITY.md"
   "CHANGELOG.md"
+  "AGENTS.md"
   ".gitignore"
   ".editorconfig"
-  "skills/solve-issue/SKILL.md"
-  "skills/solve-issue/templates/issue-followup-comment.md"
-  "skills/solve-issue/examples/final-response-format.md"
-  "agents/issue-implementer.md"
-  "scripts/guard_bash_commands.py"
+  ".claude/skills/solve-issue/SKILL.md"
+  ".claude/skills/solve-issue/templates/issue-followup-comment.md"
+  ".claude/skills/solve-issue/examples/final-response-format.md"
+  ".claude/agents/issue-implementer.md"
+  ".claude/scripts/guard_bash_commands.py"
+  ".agents/skills/solve-issue/SKILL.md"
+  ".agents/openai.yaml"
   "install/install.sh"
   "install/uninstall.sh"
   "install/verify.sh"
+  "install/install-codex.sh"
+  "install/verify-codex.sh"
   "docs/architecture.md"
   "docs/installation.md"
   "docs/usage.md"
@@ -52,9 +57,10 @@ done
 # --- Required directories -------------------------------------------------
 
 required_dirs=(
-  "skills"
-  "agents"
-  "scripts"
+  ".claude/skills"
+  ".claude/agents"
+  ".claude/scripts"
+  ".agents/skills"
   "docs"
   "install"
   "tests"
@@ -103,18 +109,30 @@ check_frontmatter() {
   fi
 }
 
-check_frontmatter "${REPO_ROOT}/skills/solve-issue/SKILL.md" "SKILL.md"
-check_frontmatter "${REPO_ROOT}/agents/issue-implementer.md" "issue-implementer.md"
+check_frontmatter "${REPO_ROOT}/.claude/skills/solve-issue/SKILL.md" "Claude SKILL.md"
+check_frontmatter "${REPO_ROOT}/.claude/agents/issue-implementer.md" "issue-implementer.md"
+check_frontmatter "${REPO_ROOT}/.agents/skills/solve-issue/SKILL.md" "Codex SKILL.md"
+
+# --- Codex implicit invocation disabled -----------------------------------
+
+codex_config="${REPO_ROOT}/.agents/openai.yaml"
+if [[ -f "$codex_config" ]]; then
+  if grep -q 'allow_implicit_invocation: false' "$codex_config"; then
+    pass "Codex implicit invocation disabled"
+  else
+    fail "Codex openai.yaml should have allow_implicit_invocation: false"
+  fi
+fi
 
 # --- Executable bits ------------------------------------------------------
 
-if [[ -x "${REPO_ROOT}/scripts/guard_bash_commands.py" ]]; then
+if [[ -x "${REPO_ROOT}/.claude/scripts/guard_bash_commands.py" ]]; then
   pass "guard_bash_commands.py is executable"
 else
   fail "guard_bash_commands.py is not executable"
 fi
 
-for script in install.sh uninstall.sh verify.sh; do
+for script in install.sh uninstall.sh verify.sh install-codex.sh verify-codex.sh; do
   if [[ -x "${REPO_ROOT}/install/${script}" ]]; then
     pass "${script} is executable"
   else

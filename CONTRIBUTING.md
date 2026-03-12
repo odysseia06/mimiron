@@ -1,126 +1,74 @@
 # Contributing to Mimiron
 
-Thank you for considering a contribution. This document covers how to set up, develop, test, and submit changes.
-
 ## Getting started
 
 ```bash
-git clone https://github.com/mimiron-dev/mimiron.git
+git clone https://github.com/odysseia06/mimiron.git
 cd mimiron
 ```
 
-No build step is required. Mimiron is plain Markdown, Python (stdlib only), and shell scripts.
+No build step required. Mimiron is plain Markdown, Python (stdlib only), and shell scripts.
+
+## Repository structure
+
+| Directory | Agent family | Status |
+|---|---|---|
+| `.claude/` | Claude Code | Active — fully implemented |
+| `.agents/` | Codex | Placeholder — skill skeletons only |
+
+See [docs/architecture.md](docs/architecture.md) for the full layout.
 
 ## Local development
 
-### Test the plugin locally
-
 ```bash
-# Install to a test project in symlink mode
-bash install/install.sh --target /path/to/test-project --scope project --mode symlink --dry-run
-
-# If the dry-run looks correct, run for real
+# Test Claude plugin locally
 bash install/install.sh --target /path/to/test-project --scope project --mode symlink
-```
 
-### Run smoke tests
-
-```bash
+# Run smoke tests
 bash tests/smoke/test_structure.sh
 python3 tests/smoke/test_guard_script.py
-```
 
-### Verify structure
-
-```bash
+# Verify structure
 bash install/verify.sh --source .
+bash install/verify-codex.sh --source .
 ```
 
 ## What to contribute
 
-We welcome:
+### Claude Code (`.claude/`)
 
-- **New skills** — reusable Claude Code skills that follow the patterns in `skills/`
-- **New agents** — subagent definitions that follow the patterns in `agents/`
-- **Guard/hook scripts** — safety scripts that enforce workflow guardrails
-- **Bug fixes** — in existing skills, agents, or scripts
-- **Documentation** — corrections, clarifications, new guides
-- **Test coverage** — smoke tests, fixture-based tests, edge case coverage
+New skills, agents, guard scripts, bug fixes, docs. See [docs/authoring-guide.md](docs/authoring-guide.md).
 
-## Adding a new skill
+### Codex (`.agents/`)
 
-1. Create `skills/<skill-name>/SKILL.md` with YAML frontmatter
-2. Add any supporting files under `skills/<skill-name>/templates/` and `skills/<skill-name>/examples/`
-3. Register the skill in `plugin.json`
-4. Add a smoke test in `tests/smoke/`
-5. Update `CHANGELOG.md`
-6. See [docs/authoring-guide.md](docs/authoring-guide.md) for the full guide
+Currently placeholders. When contributing:
+- **Do not** copy Claude instructions into Codex skills
+- Author natively using Codex conventions
+- Keep `allow_implicit_invocation: false` until skills are tested
 
-## Adding a new agent
+### General
 
-1. Create `agents/<agent-name>.md` with YAML frontmatter
-2. Register the agent in `plugin.json`
-3. If the agent uses hook scripts, add them under `scripts/` and document the path expectations
-4. Add a smoke test
-5. Update `CHANGELOG.md`
+Tests, install script improvements, CI improvements, documentation.
 
 ## Coding standards
 
-### Markdown
-- Use YAML frontmatter for all skill and agent files
-- Keep lines readable (no strict wrap limit, but avoid excessively long lines)
-
-### Python
-- Python 3.8+ compatible
-- Standard library only — no third-party dependencies
-- Use `json.dumps` for structured output, not `print` with string concatenation
-- All scripts must be executable (`chmod +x`)
-- Include a `#!/usr/bin/env python3` shebang
-
-### Shell
-- POSIX-compatible bash (bash 3.2+)
-- Use `set -euo pipefail` at the top of scripts
-- Quote all variable expansions
-- Use `[[ ]]` for conditionals
-- Avoid bashisms that break on older systems when practical
-
-### PowerShell
-- PowerShell 5.1+ compatible
-- Use `Set-StrictMode -Version Latest` and `$ErrorActionPreference = 'Stop'`
+- **Python**: 3.8+, stdlib only, executable, shebang
+- **Shell**: bash 3.2+, `set -euo pipefail`, quote expansions
+- **PowerShell**: 5.1+, strict mode
+- **Markdown**: YAML frontmatter for skills and agents
 
 ## Security-sensitive changes
 
-Any PR that touches the following areas requires extra scrutiny:
-
-- **Bash tool access** — changes to allowed-tools lists in skills or agents
-- **Hook scripts** — changes to guard_bash_commands.py or new hook scripts
-- **Permission modes** — changes to agent permissionMode settings
-- **Git operations** — anything that could push, force-push, reset, or delete
-- **GitHub CLI operations** — anything that could close issues, merge PRs, or modify repo settings
-
-See [docs/security-model.md](docs/security-model.md) for the full threat model.
+PRs touching Bash access, hook scripts, permission modes, git push, or gh commands require extra review. See [docs/security-model.md](docs/security-model.md).
 
 ## Pull request process
 
-1. Fork the repo and create a branch from `main`
-2. Make your changes
-3. Run smoke tests locally
-4. Update `CHANGELOG.md` under `[Unreleased]`
-5. Open a PR with a clear title and description using the PR template
-6. Address review feedback
-
-## Commit messages
-
-Use clear, imperative-mood commit messages:
-
-```
-Add solve-issue skill for GitHub issue automation
-Fix guard script false positive on gh issue view
-Update installation docs for Windows PowerShell
-```
-
-Reference issue numbers when applicable: `Fix #42: handle missing default branch`.
+1. Fork and branch from `main`
+2. Make changes
+3. Run smoke tests
+4. Update `CHANGELOG.md`
+5. Open PR using the template
 
 ## Code of conduct
 
-This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
+[Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).

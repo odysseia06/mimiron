@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Restructured as a multi-agent repository — no longer Claude-only
+- Moved Claude runtime assets into `.claude/` (skills, agents, scripts)
+- Updated `plugin.json` paths to reference `.claude/` source layout
+- Rewrote all documentation for multi-agent positioning
+- Separated security model into Claude-specific and Codex-specific sections
+- Updated install/uninstall/verify scripts for new `.claude/` source paths
+
+### Added
+- Codex placeholder skill skeletons under `.agents/skills/`
+- `.agents/openai.yaml` with `allow_implicit_invocation: false`
+- `AGENTS.md` repository guide for Codex-aware contributors
+- `install/install-codex.sh` — Codex manual installer
+- `install/verify-codex.sh` — Codex structure verifier
+- Smoke test coverage for Codex placeholders and `.agents/` structure
+
+## [0.1.0] - Unreleased
+
 ### Added
 - Initial repository scaffold
 - `solve-issue` skill for end-to-end GitHub issue implementation
@@ -17,7 +35,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation: architecture, installation, usage, security model, authoring guide, release process
 - CI workflows for structure validation and smoke tests
 - Issue templates and PR template
-
-## [0.1.0] - Unreleased
-
-Initial release.

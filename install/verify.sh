@@ -88,13 +88,13 @@ verify_source() {
     fail "VERSION file missing"
   fi
 
-  # Expected runtime files
+  # Expected Claude runtime files
   local -a expected_files=(
-    "skills/solve-issue/SKILL.md"
-    "skills/solve-issue/templates/issue-followup-comment.md"
-    "skills/solve-issue/examples/final-response-format.md"
-    "agents/issue-implementer.md"
-    "scripts/guard_bash_commands.py"
+    ".claude/skills/solve-issue/SKILL.md"
+    ".claude/skills/solve-issue/templates/issue-followup-comment.md"
+    ".claude/skills/solve-issue/examples/final-response-format.md"
+    ".claude/agents/issue-implementer.md"
+    ".claude/scripts/guard_bash_commands.py"
   )
 
   for f in "${expected_files[@]}"; do
@@ -105,18 +105,49 @@ verify_source() {
     fi
   done
 
+  # Expected Codex placeholders
+  local -a codex_files=(
+    ".agents/skills/solve-issue/SKILL.md"
+    ".agents/openai.yaml"
+  )
+
+  for f in "${codex_files[@]}"; do
+    if [[ -f "${root}/${f}" ]]; then
+      pass "Found: ${f}"
+    else
+      fail "Missing: ${f}"
+    fi
+  done
+
+  # AGENTS.md
+  if [[ -f "${root}/AGENTS.md" ]]; then
+    pass "Found: AGENTS.md"
+  else
+    fail "Missing: AGENTS.md"
+  fi
+
   # SKILL.md has frontmatter
-  local skill_file="${root}/skills/solve-issue/SKILL.md"
+  local skill_file="${root}/.claude/skills/solve-issue/SKILL.md"
   if [[ -f "$skill_file" ]]; then
     if head -1 "$skill_file" | grep -q '^---$'; then
-      pass "SKILL.md has YAML frontmatter"
+      pass "Claude SKILL.md has YAML frontmatter"
     else
-      fail "SKILL.md missing YAML frontmatter"
+      fail "Claude SKILL.md missing YAML frontmatter"
+    fi
+  fi
+
+  # Codex SKILL.md has frontmatter
+  local codex_skill="${root}/.agents/skills/solve-issue/SKILL.md"
+  if [[ -f "$codex_skill" ]]; then
+    if head -1 "$codex_skill" | grep -q '^---$'; then
+      pass "Codex SKILL.md has YAML frontmatter"
+    else
+      fail "Codex SKILL.md missing YAML frontmatter"
     fi
   fi
 
   # Agent has frontmatter
-  local agent_file="${root}/agents/issue-implementer.md"
+  local agent_file="${root}/.claude/agents/issue-implementer.md"
   if [[ -f "$agent_file" ]]; then
     if head -1 "$agent_file" | grep -q '^---$'; then
       pass "issue-implementer.md has YAML frontmatter"
@@ -125,8 +156,18 @@ verify_source() {
     fi
   fi
 
+  # Codex implicit invocation disabled
+  local codex_config="${root}/.agents/openai.yaml"
+  if [[ -f "$codex_config" ]]; then
+    if grep -q 'allow_implicit_invocation: false' "$codex_config"; then
+      pass "Codex implicit invocation disabled"
+    else
+      fail "Codex openai.yaml should have allow_implicit_invocation: false"
+    fi
+  fi
+
   # Guard script is executable
-  local guard="${root}/scripts/guard_bash_commands.py"
+  local guard="${root}/.claude/scripts/guard_bash_commands.py"
   if [[ -f "$guard" ]]; then
     if [[ -x "$guard" ]]; then
       pass "guard_bash_commands.py is executable"
@@ -250,7 +291,7 @@ verify_target() {
     if [[ "$mode" == "copy" && -n "$source_root" && -d "$source_root" ]]; then
       info "Verifying file checksums against source..."
       for f in "${expected_files[@]}"; do
-        local src="${source_root}/${f}"
+        local src="${source_root}/.claude/${f}"
         local tgt="${claude_dir}/${f}"
         if [[ -f "$src" && -f "$tgt" ]]; then
           local src_sum tgt_sum
