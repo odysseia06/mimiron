@@ -80,7 +80,7 @@ fi
 
 # --- VERSION matches plugin.json -----------------------------------------
 
-file_version="$(cat "${REPO_ROOT}/VERSION" | tr -d '[:space:]')"
+file_version="$(tr -d '[:space:]' < "${REPO_ROOT}/VERSION")"
 json_version="$(python3 -c "import json; print(json.load(open('${REPO_ROOT}/plugin.json'))['version'])" 2>/dev/null)"
 
 if [[ "$file_version" == "$json_version" ]]; then

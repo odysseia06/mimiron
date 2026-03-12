@@ -87,7 +87,7 @@ done
 
 # Read version
 if [[ -f "${SOURCE_ROOT}/VERSION" ]]; then
-  VERSION="$(cat "${SOURCE_ROOT}/VERSION" | tr -d '[:space:]')"
+  VERSION="$(tr -d '[:space:]' < "${SOURCE_ROOT}/VERSION")"
 fi
 
 # Determine target root
