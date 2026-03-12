@@ -9,16 +9,13 @@ set -euo pipefail
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
 ERRORS=0
-WARNINGS=0
 
 pass() { printf "${GREEN}[pass]${NC}  %s\n" "$*"; }
 fail() { printf "${RED}[FAIL]${NC}  %s\n" "$*"; ERRORS=$((ERRORS + 1)); }
-warn() { printf "${YELLOW}[warn]${NC}  %s\n" "$*"; WARNINGS=$((WARNINGS + 1)); }
 info() { printf "${BLUE}[info]${NC}  %s\n" "$*"; }
 
 usage() {
@@ -114,13 +111,9 @@ fi
 echo ""
 echo "---"
 if [[ $ERRORS -gt 0 ]]; then
-  fail "Codex verification failed: ${ERRORS} error(s), ${WARNINGS} warning(s)"
+  fail "Codex verification failed: ${ERRORS} error(s)"
   exit 1
 else
-  if [[ $WARNINGS -gt 0 ]]; then
-    pass "Codex verification passed with ${WARNINGS} warning(s)"
-  else
-    pass "Codex verification passed"
-  fi
+  pass "Codex verification passed"
   exit 0
 fi
