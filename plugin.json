@@ -1,0 +1,38 @@
+{
+  "name": "mimiron",
+  "version": "0.1.0",
+  "description": "Reusable skills, subagents, hooks, and automation for Claude Code — plugin-first, team-ready, least-privilege by default.",
+  "homepage": "https://github.com/mimiron-dev/mimiron",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "agents",
+    "automation",
+    "github-issues",
+    "workflow"
+  ],
+  "skills": [
+    {
+      "path": "skills/solve-issue/SKILL.md",
+      "name": "solve-issue",
+      "description": "Read a GitHub issue, implement the fix, validate, commit, push, and optionally comment."
+    }
+  ],
+  "agents": [
+    {
+      "path": "agents/issue-implementer.md",
+      "name": "issue-implementer",
+      "description": "Focused implementation subagent for GitHub issues."
+    }
+  ],
+  "scripts": [
+    {
+      "path": "scripts/guard_bash_commands.py",
+      "description": "PreToolUse hook guard that blocks dangerous bash commands in issue-solving workflows."
+    }
+  ],
+  "compatibility": {
+    "claude-code": ">=1.0.0"
+  }
+}

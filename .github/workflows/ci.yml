@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    name: Validate structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run structure tests
+        run: bash tests/smoke/test_structure.sh
+
+      - name: Run guard script tests
+        run: python3 tests/smoke/test_guard_script.py
+
+      - name: Verify plugin structure
+        run: bash install/verify.sh --source .
+
+  shellcheck:
+    name: Lint shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Lint install scripts
+        run: |
+          shellcheck install/install.sh
+          shellcheck install/uninstall.sh
+          shellcheck install/verify.sh
+          shellcheck tests/smoke/test_structure.sh
